@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -18,26 +19,25 @@ class MainActivity : AppCompatActivity() {
 
         val btnClick = findViewById<Button>(R.id.btn_click)
         val btnSecond = findViewById<Button>(R.id.btn_second)
+        val btnThird = findViewById<Button>(R.id.btn_third)
 
+        // Explicit Intent
         btnClick.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java).apply {
-                putExtra("test", "Ini adalah data teks saya")
-            }
+            val intent = Intent(this, SecondActivity::class.java)
+            intent.putExtra("test", "Ini adalah data teks saya")
             startActivity(intent)
         }
 
-        // ✅ Buka aplikasi YouTube (fallback ke browser kalau tidak ada)
+        // Implicit Intent (YouTube)
         btnSecond.setOnClickListener {
             val url = "https://www.youtube.com/@88rising"
 
-            val youtubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                setPackage("com.google.android.youtube") // paksa buka YouTube app
-            }
+            val youtubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            youtubeIntent.setPackage("com.google.android.youtube")
 
             try {
                 startActivity(youtubeIntent)
             } catch (e: Exception) {
-                // fallback: buka lewat browser
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 if (browserIntent.resolveActivity(packageManager) != null) {
                     startActivity(browserIntent)
@@ -45,6 +45,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Tidak ada aplikasi untuk membuka link", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        // 👉 Buka ThirdActivity (Fragment)
+        btnThird.setOnClickListener {
+            val intent = Intent(this, ThirdActivity::class.java)
+            startActivity(intent)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
